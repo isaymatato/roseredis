@@ -13,5 +13,13 @@
     "abstraction"
   ],
   "author": "Mateo Williford <mateowilliford@gmail.com>",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isaymatato/rose_redis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/isaymatato/rose_redis/issues"
+  },
+  "homepage": "https://github.com/isaymatato/rose_redis#readme"
 }
