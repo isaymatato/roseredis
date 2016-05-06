@@ -147,7 +147,7 @@ function returnSetKey(key, value) {
 }
 
 function Client(redisClient) {
-  this.redisClient = redisClient;
+  this.redisClient = redisClient || this._createRedisClient();
   this.commandDefs = [];
 }
 
@@ -155,6 +155,11 @@ Client.prototype.multi = function() {
   var multi = new RoseRedis(this.redisClient,this.commandDefs);
   return multi;
 };
+
+Client.prototype._createRedisClient = function(){
+  var redis = require("redis");
+  return redis.createClient();
+}
 
 Client.prototype._registerCommandSingle = function(commandDef) {
   this.commandDefs.push(commandDef);
