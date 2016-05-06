@@ -126,6 +126,7 @@ RoseRedis.prototype._processReplies = function(replies) {
 };
 
 RoseRedis.prototype.exec = function(callback) {
+  callback = callback || function(){};
   var self = this;
   this._execRedis(function(err, replies) {
     if (err) {
