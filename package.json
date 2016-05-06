@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/isaymatato/rose_redis/issues"
   },
-  "homepage": "https://github.com/isaymatato/rose_redis#readme"
+  "homepage": "https://github.com/isaymatato/rose_redis#readme",
+  "dependencies": {
+    "redis": "^2.6.0-2"
+  }
 }
