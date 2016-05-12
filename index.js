@@ -1,63 +1,6 @@
-function mapKeys(parent, pointer) {
-  Object.keys(pointer).forEach(function(key) {
-    parent.pointer[ parent.field ][key] = pointer[key];
-  });
-}
+var deepSet = require('deepref').set;
 
-function deepReference(object, path) {
-  path = path.split('.');
-  var field;
-  var intField;
-  var pointer = object;
-  var parent = null;
-  for (var i = 0; i < path.length; i += 1) {
-    field = path[i];
-    intField = parseInt(field);
-
-    if (!isNaN(intField)) {
-      // Field is an integer
-      field = intField;
-
-      // Convert current obj to array if it isn't one already
-      if (!Array.isArray(pointer) &&
-          parent) {
-        parent.pointer[ parent.field ] = [];
-        mapKeys(parent, pointer);
-        pointer = parent.pointer[ parent.field ];
-      }
-    }
-
-    if (typeof pointer[field] !== 'object') {
-      pointer[field] = {};
-    }
-    parent = {
-      pointer: pointer,
-      field: field
-    };
-    if (i < path.length - 1) {
-      pointer = pointer[field];
-    }
-  }
-  return {
-    pointer: pointer,
-    field: field
-  };
-}
-
-function deepSet(object, path, value) {
-  var deep = deepReference(object, path);
-  deep.pointer[deep.field] = value;
-}
-
-function deepInc(object, path, delta) {
-  var deep = deepReference(object, path);
-  if (typeof deep.pointer[deep.field] !== 'number') {
-    deep.pointer[deep.field] = 0;
-  }
-  deep.pointer[deep.field] += delta;
-}
-
-function RoseRedis(redisClient, commandDefs) {
+function EasyRedis(redisClient, commandDefs) {
   this.redisClient = redisClient;
   this._commands = [];
   this._handlers = [];
@@ -65,7 +8,7 @@ function RoseRedis(redisClient, commandDefs) {
   this._registerCommands(commandDefs || []);
 }
 
-RoseRedis.prototype._registerCommand = function(self, commandDef) {
+EasyRedis.prototype._registerCommand = function(self, commandDef) {
   var label = commandDef.label;
   var method = commandDef.method;
   self[label] = function() {
@@ -73,7 +16,7 @@ RoseRedis.prototype._registerCommand = function(self, commandDef) {
   };
 };
 
-RoseRedis.prototype._registerCommands = function(commandDefs) {
+EasyRedis.prototype._registerCommands = function(commandDefs) {
   var self = this;
   commandDefs.forEach(function(def) {
     self._registerCommand(self, def);
@@ -81,18 +24,26 @@ RoseRedis.prototype._registerCommands = function(commandDefs) {
 };
 
 // Handlers must by synchronous!!!
-RoseRedis.prototype.command = function(data) {
+EasyRedis.prototype.command = function(data) {
+  if (!data) {
+    console.error('Missing data!');
+    return this;
+  }
   this._commands.push(data.command || data);
   this._handlers.push(data.handler || null);
   return this;
 };
 
-RoseRedis.prototype._execRedis = function(callback) {
+EasyRedis.prototype._execRedis = function(callback) {
+  // Nothing to do, no commands sent
+  if (!this._commands || this._commands.length < 1) {
+    return callback(null);
+  }
   var multi = this.redisClient.multi(this._commands);
   multi.exec(callback);
 };
 
-RoseRedis.prototype._handleResponse = function(response) {
+EasyRedis.prototype._handleResponse = function(response) {
   response = response || {};
   var self = this;
   var data, i;
@@ -113,9 +64,10 @@ RoseRedis.prototype._handleResponse = function(response) {
   }
 };
 
-RoseRedis.prototype._processReplies = function(replies) {
+EasyRedis.prototype._processReplies = function(replies) {
   this.result = {};
   var self = this;
+  replies = replies || [];
   replies.forEach(function(reply, index) {
     var handler = self._handlers[index];
     if (handler) {
@@ -125,9 +77,11 @@ RoseRedis.prototype._processReplies = function(replies) {
   return this.result;
 };
 
-RoseRedis.prototype.exec = function(callback) {
-  callback = callback || function(){};
+EasyRedis.prototype.exec = function(callback) {
   var self = this;
+  if (typeof callback !== 'function') {
+    callback = function() {};
+  }
   this._execRedis(function(err, replies) {
     if (err) {
       console.error(err);
@@ -147,19 +101,14 @@ function returnSetKey(key, value) {
 }
 
 function Client(redisClient) {
-  this.redisClient = redisClient || this._createRedisClient();
+  this.redisClient = redisClient;
   this.commandDefs = [];
 }
 
 Client.prototype.multi = function() {
-  var multi = new RoseRedis(this.redisClient,this.commandDefs);
+  var multi = new EasyRedis(this.redisClient,this.commandDefs);
   return multi;
 };
-
-Client.prototype._createRedisClient = function(){
-  var redis = require("redis");
-  return redis.createClient();
-}
 
 Client.prototype._registerCommandSingle = function(commandDef) {
   this.commandDefs.push(commandDef);
@@ -169,7 +118,7 @@ Client.prototype._registerCommandSingle = function(commandDef) {
   this[label] = function() {
     var callback = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0, -1);
-    var easyRedis = new RoseRedis(redisClient,[commandDef]);
+    var easyRedis = new EasyRedis(redisClient,[commandDef]);
     easyRedis[label]
       .apply(this, args)
       .exec(callback);
