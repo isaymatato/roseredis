@@ -1,4 +1,4 @@
-var deepSet = require('deepref').set;
+var deepSet = require('deepRef').set;
 
 function EasyRedis(redisClient, commandDefs) {
   this.redisClient = redisClient;
