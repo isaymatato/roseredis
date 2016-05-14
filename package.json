@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/isaymatato/rose_redis#readme",
   "dependencies": {
+    "chai": "^3.5.0",
     "deepref": "^1.1.1",
     "redis": "^2.6.0-2"
   }

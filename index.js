@@ -93,6 +93,14 @@ EasyRedis.prototype.exec = function(callback) {
 };
 
 function returnSetKey(key, value) {
+  if (typeof key !== 'string') {
+    throw new Error('setKey: key must be a string')
+    return null;
+  }
+  if (typeof value === 'undefined') {
+    throw new Error('setKey: value is undefined')
+    return null;
+  }
   var data = {};
   data[key] = value;
   return {
