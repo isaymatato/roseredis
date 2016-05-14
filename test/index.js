@@ -54,14 +54,33 @@ describe('#client', function() {
     type.should.equal('object');
   });
 
-  describe('#registerCommands', function() {
+  describe('#registerCommand', function() {
+    function testCommand(){};
+    var key = 'testCommand';
+    it('Registered command gets appended to client', function() {
+      myClient.registerCommand(key, testCommand);
+      var type = typeof myClient[key];
+      type.should.equal('function');
+    });
+  });
 
+  describe('#registerCommands', function() {
     it('Registered commands get appended to client', function() {
       myClient.registerCommands(commands);
       var keys = Object.keys(commands);
       keys.forEach(function(key) {
         var type = typeof myClient[key];
         type.should.equal('function');
+      });
+    });
+
+    it('Client should be able to set and retrieve value', function() {
+      var randomValue = '' + Math.random();
+      myClient.setTest(randomValue, function() {
+        myClient.getTest(function(err, result) {
+          err.should.equal(null);
+          result.test.should.equal(randomValue);
+        });
       });
     });
   });
@@ -85,14 +104,15 @@ describe('#client', function() {
     });
 
     it('Multi should be able to set and retrieve value', function() {
+      var randomValue = '' + Math.random();
       multi
         .delTest()
-        .setTest('multiTestValue')
+        .setTest(randomValue)
         .getTest()
         .delTest()
         .exec(function(err, result) {
           err.should.equal(null);
-          result.test.should.equal('multiTestValue');
+          result.test.should.equal(randomValue);
         });
     });
 
