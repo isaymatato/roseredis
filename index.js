@@ -1,7 +1,7 @@
 var deepSet = require('deepRef').set;
 var redis = require('redis');
 
-function EasyRedis(redisClient, commandDefs) {
+function Rose(redisClient, commandDefs) {
   this.redisClient = redisClient;
   this._commands = [];
   this._handlers = [];
@@ -9,7 +9,7 @@ function EasyRedis(redisClient, commandDefs) {
   this._registerCommands(commandDefs || []);
 }
 
-EasyRedis.prototype._registerCommand = function(self, commandDef) {
+Rose.prototype._registerCommand = function(self, commandDef) {
   var label = commandDef.label;
   var method = commandDef.method;
   self[label] = function() {
@@ -17,7 +17,7 @@ EasyRedis.prototype._registerCommand = function(self, commandDef) {
   };
 };
 
-EasyRedis.prototype._registerCommands = function(commandDefs) {
+Rose.prototype._registerCommands = function(commandDefs) {
   var self = this;
   commandDefs.forEach(function(def) {
     self._registerCommand(self, def);
@@ -25,7 +25,7 @@ EasyRedis.prototype._registerCommands = function(commandDefs) {
 };
 
 // Handlers must by synchronous!!!
-EasyRedis.prototype.command = function(data) {
+Rose.prototype.command = function(data) {
   if (!data) {
     console.error('Missing data!');
     return this;
@@ -35,7 +35,7 @@ EasyRedis.prototype.command = function(data) {
   return this;
 };
 
-EasyRedis.prototype._execRedis = function(callback) {
+Rose.prototype._execRedis = function(callback) {
   // Nothing to do, no commands sent
   if (!this._commands || this._commands.length < 1) {
     return callback(null);
@@ -44,7 +44,7 @@ EasyRedis.prototype._execRedis = function(callback) {
   multi.exec(callback);
 };
 
-EasyRedis.prototype._handleResponse = function(response) {
+Rose.prototype._handleResponse = function(response) {
   response = response || {};
   var self = this;
   var data, i;
@@ -65,7 +65,7 @@ EasyRedis.prototype._handleResponse = function(response) {
   }
 };
 
-EasyRedis.prototype._processReplies = function(replies) {
+Rose.prototype._processReplies = function(replies) {
   this.result = {};
   var self = this;
   replies = replies || [];
@@ -78,7 +78,7 @@ EasyRedis.prototype._processReplies = function(replies) {
   return this.result;
 };
 
-EasyRedis.prototype.exec = function(callback) {
+Rose.prototype.exec = function(callback) {
   var self = this;
   if (typeof callback !== 'function') {
     callback = function() {};
@@ -118,7 +118,7 @@ function Client(redisClient) {
 }
 
 Client.prototype.multi = function() {
-  var multi = new EasyRedis(this.redisClient,this.commandDefs);
+  var multi = new Rose(this.redisClient,this.commandDefs);
   return multi;
 };
 
@@ -131,7 +131,7 @@ Client.prototype._registerCommandSingle = function(commandDef) {
   this[label] = function() {
     var callback = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0, -1);
-    var easyRedis = new EasyRedis(redisClient,[commandDef]);
+    var easyRedis = new Rose(redisClient,[commandDef]);
     easyRedis[label]
       .apply(this, args)
       .exec(callback);
