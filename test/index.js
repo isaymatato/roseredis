@@ -84,6 +84,18 @@ describe('#client', function() {
       });
     });
 
+    it('Multi should be able to set and retrieve value', function() {
+      multi
+        .delTest()
+        .setTest('multiTestValue')
+        .getTest()
+        .delTest()
+        .exec(function(err, result) {
+          err.should.equal(null);
+          result.test.should.equal('multiTestValue');
+        });
+    });
+
   });
 
 

@@ -1,4 +1,5 @@
 var deepSet = require('deepRef').set;
+var redis = require('redis');
 
 function EasyRedis(redisClient, commandDefs) {
   this.redisClient = redisClient;
@@ -110,6 +111,9 @@ function returnSetKey(key, value) {
 
 function Client(redisClient) {
   this.redisClient = redisClient;
+  if (!this.redisClient) {
+    this.redisClient = redis.createClient();
+  }
   this.commandDefs = [];
 }
 
@@ -123,6 +127,7 @@ Client.prototype._registerCommandSingle = function(commandDef) {
 
   var label = commandDef.label;
   var redisClient = this.redisClient;
+
   this[label] = function() {
     var callback = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0, -1);
