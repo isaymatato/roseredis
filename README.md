@@ -8,7 +8,7 @@ Easy to use abstraction layer for node_redis
   npm install roseredis --save
   ```
 
-## Usage
+## Usage Example
 
   ```javascript
   var rose = require('roseredis');
@@ -65,6 +65,60 @@ Easy to use abstraction layer for node_redis
     });
 
   ```
+## Creating commands
+
+Rose commands are methods that return a redis command array and optional reply handler.
+
+```javascript
+function getFoo() {
+  return {
+    command: ['get', 'fooKey'],
+    handler: function(reply) {
+      return rose.setKey('fooResult', reply);
+    }
+  };
+}
+```
+Command is the redis command array.
+This gets the value stored at redis key 'fooKey'
+```javascript
+command: ['get', 'fooKey'],
+```
+
+You can optionally return just the redis command if you're not doing anything with the redis reply.
+(This is common for setters)
+```javascript
+function setFoo(value) {
+  return ['set', 'fooKey', value];
+}
+```
+
+Handler wraps the reply from redis.
+rose.setKey(key, value) sets result.key to value
+```javascript
+handler: function(reply) {
+  return rose.setKey('fooResult', reply);
+}
+```
+
+You can use to handler to provide additional formatting of the data, such as parsing values from the reply.
+```javascript
+handler: function(reply) {
+  var parsed = parseInt(reply) || 0;
+  return rose.setKey('barResult', parsed);
+}
+```
+
+Rose uses deepref, which means you can set nested fields in the result
+```javascript
+handler: function(reply) {
+  return rose.setKey('a.b.c', reply);
+}
+// The result will be { a: { b: { c: <reply> } } }
+```
+See here for full documentation on deepref
+https://github.com/isaymatato/deepref#readme
+
 
 ## Tests
   ```
