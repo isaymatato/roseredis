@@ -1,0 +1,86 @@
+{
+  "esnext": true,
+  "verbose": true,
+  "disallowEmptyBlocks": true,
+  "disallowKeywordsOnNewLine": ["else"],
+  "disallowMultipleLineBreaks": true,
+  "disallowMultipleVarDecl": {
+    "allExcept": ["undefined", "require"]
+  },
+  "disallowNewlineBeforeBlockStatements": true,
+  "disallowSpaceAfterObjectKeys": true,
+  "disallowSpaceAfterPrefixUnaryOperators": true,
+  "disallowSpaceBeforePostfixUnaryOperators": true,
+  "disallowSpaceBeforeSemicolon": true,
+  "disallowSpacesInFunction": {
+    "beforeOpeningRoundBrace": true
+  },
+  "disallowSpacesInsideParentheses": true,
+  "disallowSpacesInCallExpression": true,
+  "disallowTabs": true,
+  "disallowTrailingComma": false,
+  "disallowTrailingWhitespace": true,
+  "disallowVar": false,
+  "excludeFiles": ["public/libs"],
+  "maximumLineLength": 80,
+  "requireArrayDestructuring": false,
+  "requireBlocksOnNewline": 1,
+  "requireCamelCaseOrUpperCaseIdentifiers": true,
+  "requireCapitalizedConstructors": true,
+  "requireCommaBeforeLineBreak": true,
+  "requireCurlyBraces": [
+    "if",
+    "else",
+    "for",
+    "while",
+    "do",
+    "try",
+    "catch",
+    "switch"
+  ],
+  "requireDotNotation": true,
+  "requireEnhancedObjectLiterals": false,
+  "requireLineBreakAfterVariableAssignment": true,
+  "requireObjectDestructuring": false,
+  "requireOperatorBeforeLineBreak": ["."],
+  "requireParenthesesAroundArrowParam": false,
+  "requireSemicolons": true,
+  "requireSpaceAfterBinaryOperators": true,
+  "requireSpaceAfterKeywords": [
+    "do",
+    "for",
+    "if",
+    "else",
+    "switch",
+    "case",
+    "try",
+    "void",
+    "while",
+    "with",
+    "return",
+    "typeof"
+  ],
+  "requireSpaceAfterLineComment": true,
+  "requireSpaceBeforeBinaryOperators": true,
+  "requireSpaceBeforeBlockStatements": true,
+  "requireSpaceBeforeKeywords": [
+    "else",
+    "while",
+    "catch"
+  ],
+  "requireSpaceBeforeObjectValues": true,
+  "requireSpaceBetweenArguments": true,
+  "requireSpacesInFunction": {
+    "beforeOpeningCurlyBrace": true
+  },
+  "requireSpacesInConditionalExpression": true,
+  "requireSpacesInForStatement": true,
+  "requireSpacesInsideObjectBrackets": "all",
+  "requireTrailingComma": false,
+  "validateIndentation": 2,
+  "validateParameterSeparator": ", ",
+  "validateQuoteMarks": {
+    "mark": "'",
+    "escape": true
+  }
+}

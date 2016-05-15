@@ -1,0 +1,27 @@
+{
+  "asi": false,
+  "bitwise": true,
+  "browser": true,
+  "curly": true,
+  "forin": true,
+  "latedef": "nofunc",
+  "noarg": true,
+  "node": true,
+  "nonew": true,
+  "predef": [
+    "$",
+    "jQuery",
+
+    "jasmine",
+    "beforeEach",
+    "describe",
+    "expect",
+    "it",
+
+    "angular",
+    "inject",
+    "module"
+  ],
+  "undef": true,
+  "unused": true
+}
