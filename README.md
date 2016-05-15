@@ -119,6 +119,38 @@ See here for full documentation on deepref
 https://github.com/isaymatato/deepref#readme
 
 
+## Registering commands
+Once created, you'll need to register commands with the rose client.
+
+This can be done one at a time, using client.registerCommand(label, method);
+```javascript
+function setFoo(value) {
+  return ['set', 'fooKey', value];
+}
+
+roseClient.registerCommand('setFoo', setFoo);
+```
+
+Or, more typically, you can use registerCommands to register all the commands defined in an object
+```javascript
+var commands = {
+  setFoo:
+  function(value) {
+    return ['set',redisKey.foo,value];
+  },
+  getFoo:
+  function() {
+    return {
+      command: ['get',redisKey.foo],
+      handler: function(reply) {
+        return rose.setKey('fooResult', reply);
+      }
+    };
+  }
+};
+roseClient.registerCommands(commands);
+```
+
 ## Tests
   ```
   npm test
