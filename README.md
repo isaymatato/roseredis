@@ -108,7 +108,7 @@ handler: function(reply) {
 }
 ```
 
-Rose uses deepref, which means you can set nested fields in the result
+Rose uses deepref, which allows you to set nested fields in the result
 ```javascript
 handler: function(reply) {
   return rose.setKey('a.b.c', reply);
