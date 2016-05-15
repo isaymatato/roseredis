@@ -23,9 +23,11 @@
   },
   "homepage": "https://github.com/isaymatato/roseredis#readme",
   "dependencies": {
-    "chai": "^3.5.0",
     "deepref": "^1.1.1",
-    "mocha": "^2.4.5",
     "redis": "^2.6.0-2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5"
   }
 }
