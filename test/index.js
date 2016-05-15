@@ -2,7 +2,6 @@ var chai = require('chai');
 var should = chai.should();
 var expect = chai.expect;
 var rose = require('../index');
-var setKey = rose.setKey;
 var createClient = rose.createClient;
 
 describe('#createClient', function() {
@@ -61,7 +60,7 @@ describe('#createClient', function() {
         var randomValue = '' + Math.random();
         myClient.setTest(randomValue, function() {
           myClient.getTest(function(err, result) {
-            err.should.equal(null);
+            should.not.exist(err);
             result.test.should.equal(randomValue);
             done();
           });
@@ -77,7 +76,6 @@ describe('#createClient', function() {
         var type = typeof multi;
         type.should.equal('object');
       });
-
 
       it('Registered commands get appended to multi', function() {
         var keys = Object.keys(commands);
@@ -95,7 +93,7 @@ describe('#createClient', function() {
           .getTest()
           .delTest()
           .exec(function(err, result) {
-            err.should.equal(null);
+            should.not.exist(err);
             result.test.should.equal(randomValue);
             done();
           });
