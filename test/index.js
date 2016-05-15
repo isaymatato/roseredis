@@ -5,25 +5,6 @@ var rose = require('../index');
 var setKey = rose.setKey;
 var createClient = rose.createClient;
 
-describe('#setKey', function() {
-  it('Throws error if missing a key', function() {
-    expect(function(){
-      setKey(undefined, 'x');
-    }).to.throw('setKey: key must be a string');
-  });
-  it('Throws error if missing a value', function() {
-    expect(function(){
-      setKey('x', undefined);
-    }).to.throw('setKey: value is undefined');
-  });
-
-  it('Returns structure of {$set: {key:value}}', function() {
-    var result = setKey('keyName','value');
-    var json = JSON.stringify(result);
-    json.should.equal('{"$set":{"keyName":"value"}}');
-  });
-});
-
 describe('#createClient', function() {
   var myClient;
 
@@ -38,8 +19,8 @@ describe('#createClient', function() {
     function() {
       return {
         command: ['get',testKey],
-        handler: function(reply) {
-          return rose.setKey('test', reply);
+        handler: function(reply, result) {
+          result.test = reply;
         }
       };
     },
