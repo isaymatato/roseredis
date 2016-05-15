@@ -100,7 +100,7 @@ handler: function(reply) {
 }
 ```
 
-You can use to handler to provide additional formatting of the data, such as parsing values from the reply.
+You can use the handler to provide additional formatting of the data, such as parsing values from the reply.
 ```javascript
 handler: function(reply) {
   var parsed = parseInt(reply) || 0;
