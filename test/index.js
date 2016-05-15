@@ -57,12 +57,13 @@ describe('#createClient', function() {
         });
       });
 
-      it('Client should be able to set and retrieve value', function() {
+      it('Client should be able to set and retrieve value', function(done) {
         var randomValue = '' + Math.random();
         myClient.setTest(randomValue, function() {
           myClient.getTest(function(err, result) {
             err.should.equal(null);
             result.test.should.equal(randomValue);
+            done();
           });
         });
       });
@@ -86,7 +87,7 @@ describe('#createClient', function() {
         });
       });
 
-      it('Multi should be able to set and retrieve value', function() {
+      it('Multi should be able to set and retrieve value', function(done) {
         var randomValue = '' + Math.random();
         multi
           .delTest()
@@ -96,6 +97,7 @@ describe('#createClient', function() {
           .exec(function(err, result) {
             err.should.equal(null);
             result.test.should.equal(randomValue);
+            done();
           });
       });
 
