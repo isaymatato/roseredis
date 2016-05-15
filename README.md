@@ -83,20 +83,19 @@ Command is the redis command array.
 ```javascript
 command: ['get', 'fooKey'],
 ```
+Handler wraps the reply from redis.  
+rose.setKey(key, value) tells rose to set result.key to value
+```javascript
+handler: function(reply) {
+  return rose.setKey('fooResult', reply);
+}
+```
 
 You can optionally return just the redis command if you're not doing anything with the redis reply.  
 (This is common for setters)
 ```javascript
 function setFoo(value) {
   return ['set', 'fooKey', value];
-}
-```
-
-Handler wraps the reply from redis.  
-rose.setKey(key, value) tells rose to set result.key to value
-```javascript
-handler: function(reply) {
-  return rose.setKey('fooResult', reply);
 }
 ```
 
