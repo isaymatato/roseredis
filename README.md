@@ -28,8 +28,8 @@ Easy to use abstraction layer for node_redis
     function() {
       return {
         command: ['get',redisKey.foo],
-        handler: function(reply) {
-          return rose.setKey('fooResult', reply);
+        handler: function(reply, result) {
+          return result.foo = reply;
         }
       };
     },
@@ -41,9 +41,8 @@ Easy to use abstraction layer for node_redis
     function() {
       return {
         command: ['get',redisKey.bar],
-        handler: function(reply) {
-          var parsed = parseInt(reply) || 0;
-          return rose.setKey('barResult', parsed);
+        handler: function(reply, result) {
+          result.bar = parseInt(reply) || 0;
         }
       };
     },
@@ -57,9 +56,9 @@ Easy to use abstraction layer for node_redis
     .getFoo()
     .getBar()
     .exec(function(err, result) {
-      console.log(result.fooResult);
+      console.log(result.foo);
       // Foo is set to this
-      console.log(result.barResult, typeof result.barResult);
+      console.log(result.bar, typeof result.bar);
       // 123456 'number'
     });
 
@@ -72,8 +71,8 @@ Rose commands are methods that return a redis command array and optional reply h
 function getFoo() {
   return {
     command: ['get', 'fooKey'],
-    handler: function(reply) {
-      return rose.setKey('fooResult', reply);
+    handler: function(reply, result) {
+      result.foo = reply;
     }
   };
 }
@@ -83,11 +82,10 @@ Command is the redis command array.
 ```javascript
 command: ['get', 'fooKey'],
 ```
-Handler wraps the reply from redis.  
-rose.setKey(key, value) tells rose to set result.key to value
+Handler wraps the reply from redis.
 ```javascript
-handler: function(reply) {
-  return rose.setKey('fooResult', reply);
+handler: function(reply, result) {
+  result.foo = reply;
 }
 ```
 
@@ -101,21 +99,10 @@ function setFoo(value) {
 
 You can use the handler to provide additional formatting of the data, such as parsing values from the reply.
 ```javascript
-handler: function(reply) {
-  var parsed = parseInt(reply) || 0;
-  return rose.setKey('barResult', parsed);
+handler: function(reply, result) {
+  result.bar = parseInt(reply) || 0;
 }
 ```
-
-Rose uses deepref, which allows you to set nested fields in the result
-```javascript
-handler: function(reply) {
-  return rose.setKey('a.b.c', reply);
-}
-// The result will be { a: { b: { c: <reply> } } }
-```
-See here for full documentation on deepref  
-https://github.com/isaymatato/deepref#readme
 
 
 ## Registering commands
@@ -141,8 +128,8 @@ var commands = {
   function() {
     return {
       command: ['get',redisKey.foo],
-      handler: function(reply) {
-        return rose.setKey('fooResult', reply);
+      handler: function(reply, result) {
+        result.foo = reply;
       }
     };
   }

@@ -1,4 +1,3 @@
-var deepSet = require('deepRef').set;
 var redis = require('redis');
 
 function Rose(redisClient, commandDefs) {
@@ -44,38 +43,17 @@ Rose.prototype._execRedis = function(callback) {
   multi.exec(callback);
 };
 
-Rose.prototype._handleResponse = function(response) {
-  response = response || {};
-  var self = this;
-  var data, i;
-  // Setter
-  if (response.$set) {
-    data = response.$set;
-    for (i in data) {
-      deepSet(self.result, i, data[i]);
-    }
-  }
-
-  // Increment
-  if (response.$inc) {
-    data = response.$inc;
-    for (i in data) {
-      deepInc(self.result, i, data[i]);
-    }
-  }
-};
-
 Rose.prototype._processReplies = function(replies) {
-  this.result = {};
+  var result = {};
   var self = this;
   replies = replies || [];
   replies.forEach(function(reply, index) {
     var handler = self._handlers[index];
     if (handler) {
-      self._handleResponse(handler(reply));
+      handler(reply, result);
     }
   });
-  return this.result;
+  return result;
 };
 
 Rose.prototype.exec = function(callback) {
@@ -92,22 +70,6 @@ Rose.prototype.exec = function(callback) {
     callback(null, result);
   });
 };
-
-function returnSetKey(key, value) {
-  if (typeof key !== 'string') {
-    throw new Error('setKey: key must be a string')
-    return null;
-  }
-  if (typeof value === 'undefined') {
-    throw new Error('setKey: value is undefined')
-    return null;
-  }
-  var data = {};
-  data[key] = value;
-  return {
-    $set: data
-  };
-}
 
 function Client(redisClient) {
   this.redisClient = redisClient;
@@ -157,11 +119,8 @@ Client.prototype.registerCommands = function(data) {
   }
 };
 
-Client.prototype.setKey = returnSetKey;
-
 module.exports = {
   createClient: function(redisClient) {
     return new Client(redisClient);
-  },
-  setKey: returnSetKey
+  }
 };

@@ -2,27 +2,7 @@ var chai = require('chai');
 var should = chai.should();
 var expect = chai.expect;
 var rose = require('../index');
-var setKey = rose.setKey;
 var createClient = rose.createClient;
-
-describe('#setKey', function() {
-  it('Throws error if missing a key', function() {
-    expect(function(){
-      setKey(undefined, 'x');
-    }).to.throw('setKey: key must be a string');
-  });
-  it('Throws error if missing a value', function() {
-    expect(function(){
-      setKey('x', undefined);
-    }).to.throw('setKey: value is undefined');
-  });
-
-  it('Returns structure of {$set: {key:value}}', function() {
-    var result = setKey('keyName','value');
-    var json = JSON.stringify(result);
-    json.should.equal('{"$set":{"keyName":"value"}}');
-  });
-});
 
 describe('#createClient', function() {
   var myClient;
@@ -38,8 +18,8 @@ describe('#createClient', function() {
     function() {
       return {
         command: ['get',testKey],
-        handler: function(reply) {
-          return rose.setKey('test', reply);
+        handler: function(reply, result) {
+          result.test = reply;
         }
       };
     },
@@ -76,12 +56,13 @@ describe('#createClient', function() {
         });
       });
 
-      it('Client should be able to set and retrieve value', function() {
+      it('Client should be able to set and retrieve value', function(done) {
         var randomValue = '' + Math.random();
         myClient.setTest(randomValue, function() {
           myClient.getTest(function(err, result) {
-            err.should.equal(null);
+            should.not.exist(err);
             result.test.should.equal(randomValue);
+            done();
           });
         });
       });
@@ -96,7 +77,6 @@ describe('#createClient', function() {
         type.should.equal('object');
       });
 
-
       it('Registered commands get appended to multi', function() {
         var keys = Object.keys(commands);
         keys.forEach(function(key) {
@@ -105,7 +85,7 @@ describe('#createClient', function() {
         });
       });
 
-      it('Multi should be able to set and retrieve value', function() {
+      it('Multi should be able to set and retrieve value', function(done) {
         var randomValue = '' + Math.random();
         multi
           .delTest()
@@ -113,8 +93,9 @@ describe('#createClient', function() {
           .getTest()
           .delTest()
           .exec(function(err, result) {
-            err.should.equal(null);
+            should.not.exist(err);
             result.test.should.equal(randomValue);
+            done();
           });
       });
 
