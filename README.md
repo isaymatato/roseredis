@@ -93,7 +93,7 @@ function setFoo(value) {
 ```
 
 Handler wraps the reply from redis.  
-rose.setKey(key, value) sets result.key to value
+rose.setKey(key, value) tells rose to set result.key to value
 ```javascript
 handler: function(reply) {
   return rose.setKey('fooResult', reply);
