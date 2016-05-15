@@ -63,6 +63,36 @@ Easy to use abstraction layer for node_redis
     });
 
   ```
+## Creating the client
+
+A rose client can be created by calling rose.createClient()
+```javascript
+var rose = require('roseredis');
+var roseClient = rose.createClient();
+```
+
+If you already have a redis client configured, you may pass this in.
+```javascript
+var rose = require('roseredis');
+
+var redis = require('redis');
+var redisClient = redis.createClient();
+
+// Configure your redisClient here
+
+var roseClient = rose.createClient(redisClient);
+```
+
+Once the rose client has been created, you may access it's redisClient at anytime from roseClient.redisClient
+```javascript
+roseClient.redisClient.quit();
+// This will disconnect from the redis server
+
+```
+
+Full documentation of node_redis can be found here:
+https://github.com/NodeRedis/node_redis#readme
+
 ## Creating commands
 
 Rose commands are methods that return a redis command array and optional reply handler.
@@ -83,6 +113,10 @@ Command is the redis command array.
 command: ['get', 'fooKey'],
 ```
 Handler wraps the reply from redis.
+reply is the redis response from your command
+result is the object that gets returned in the callback
+
+This allows you to give your result values meaningful names, instead of having to keep track of reply indices
 ```javascript
 handler: function(reply, result) {
   result.foo = reply;
