@@ -160,7 +160,7 @@ Client.prototype.registerCommands = function(data) {
 Client.prototype.setKey = returnSetKey;
 
 module.exports = {
-  client: function(redisClient) {
+  createClient: function(redisClient) {
     return new Client(redisClient);
   },
   setKey: returnSetKey
