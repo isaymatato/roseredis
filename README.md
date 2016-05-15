@@ -9,8 +9,6 @@ Easy to use abstraction layer for node_redis
   ```
 
 ## Usage
-  
-  Import roseredis and create a client.
 
   ```javascript
   var rose = require('./index.js');
