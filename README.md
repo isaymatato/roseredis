@@ -90,7 +90,7 @@ roseClient.redisClient.quit();
 
 ```
 
-Full documentation of node_redis can be found here:
+Full documentation of node_redis can be found here:  
 https://github.com/NodeRedis/node_redis#readme
 
 ## Creating commands
@@ -112,10 +112,10 @@ Command is the redis command array.
 ```javascript
 command: ['get', 'fooKey'],
 ```
-Handler wraps the reply from redis.
-reply is the redis response from your command
-result is the object that gets returned in the callback
-
+Handler wraps the reply from redis.  
+reply is the redis response from your command  
+result is the object that gets returned in the callback  
+  
 This allows you to give your result values meaningful names, instead of having to keep track of reply indices
 ```javascript
 handler: function(reply, result) {
@@ -140,9 +140,9 @@ handler: function(reply, result) {
 
 
 ## Registering commands
-Once created, you'll need to register commands with the rose client.
-
-This can be done one at a time, using client.registerCommand(label, method);
+Once created, you'll need to register commands with the rose client.  
+  
+This can be done one at a time, using client.registerCommand(label, method);  
 ```javascript
 function setFoo(value) {
   return ['set', 'fooKey', value];
