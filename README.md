@@ -57,7 +57,6 @@ Easy to use abstraction layer for node_redis
     .getFoo()
     .getBar()
     .exec(function(err, result) {
-
       console.log(result.fooResult);
       // Foo is set to this
       console.log(result.barResult, typeof result.barResult);
