@@ -1,4 +1,8 @@
-test:
-	./node_modules/.bin/mocha --reporter spec
+REPORTER = spec
 
-	.PHONY: test
+test:
+	./node_modules/mocha/bin/mocha \
+	--reporter $(REPORTER) \
+	test/*.js
+
+.PHONY: test
