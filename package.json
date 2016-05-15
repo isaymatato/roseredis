@@ -4,7 +4,7 @@
   "description": "Easy to use abstraction layer for node_redis",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "make test"
   },
   "keywords": [
     "redis",
@@ -16,12 +16,12 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/isaymatato/rose_redis.git"
+    "url": "git+https://github.com/isaymatato/roseredis.git"
   },
   "bugs": {
-    "url": "https://github.com/isaymatato/rose_redis/issues"
+    "url": "https://github.com/isaymatato/roseredis/issues"
   },
-  "homepage": "https://github.com/isaymatato/rose_redis#readme",
+  "homepage": "https://github.com/isaymatato/roseredis#readme",
   "dependencies": {
     "chai": "^3.5.0",
     "deepref": "^1.1.1",
