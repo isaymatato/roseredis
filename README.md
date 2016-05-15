@@ -79,13 +79,13 @@ function getFoo() {
   };
 }
 ```
-Command is the redis command array.
-This gets the value stored at redis key 'fooKey'
+Command is the redis command array.  
+(This gets the value stored at redis key 'fooKey')
 ```javascript
 command: ['get', 'fooKey'],
 ```
 
-You can optionally return just the redis command if you're not doing anything with the redis reply.
+You can optionally return just the redis command if you're not doing anything with the redis reply.  
 (This is common for setters)
 ```javascript
 function setFoo(value) {
@@ -93,7 +93,7 @@ function setFoo(value) {
 }
 ```
 
-Handler wraps the reply from redis.
+Handler wraps the reply from redis.  
 rose.setKey(key, value) sets result.key to value
 ```javascript
 handler: function(reply) {
@@ -116,7 +116,7 @@ handler: function(reply) {
 }
 // The result will be { a: { b: { c: <reply> } } }
 ```
-See here for full documentation on deepref
+See here for full documentation on deepref  
 https://github.com/isaymatato/deepref#readme
 
 
