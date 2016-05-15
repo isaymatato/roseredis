@@ -11,7 +11,7 @@ Easy to use abstraction layer for node_redis
 ## Usage
 
   ```javascript
-  var rose = require('./index.js');
+  var rose = require('roseredis');
   var roseClient = rose.createClient();
 
   var redisKey = {
