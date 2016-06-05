@@ -90,6 +90,12 @@ describe('#createClient', function() {
       });
     });
 
+    describe('#createClient', function() {
+      it('should be a function', function() {
+        expect(myClient.createClient).to.be.a('function');
+      });
+    });
+
     describe('#multi', function() {
 
       var multi;
