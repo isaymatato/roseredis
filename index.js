@@ -1,4 +1,5 @@
 var redis = require('redis');
+var deepRef = require('deepref');
 
 function Rose(redisClient, commandDefs) {
   this.redisClient = redisClient;
@@ -45,6 +46,7 @@ Rose.prototype._execRedis = function(callback) {
 
 Rose.prototype._processReplies = function(replies) {
   var result = {};
+  deepRef.decorate(result);
   var self = this;
   replies = replies || [];
   replies.forEach(function(reply, index) {
@@ -53,6 +55,7 @@ Rose.prototype._processReplies = function(replies) {
       handler(reply, result);
     }
   });
+  deepRef.undecorate(result);
   return result;
 };
 

@@ -1,6 +1,7 @@
 var chai = require('chai');
-var should = chai.should();
+var assert = chai.assert;
 var expect = chai.expect;
+var should = chai.should();
 var rose = require('../index');
 var createClient = rose.createClient;
 
@@ -28,7 +29,7 @@ describe('#createClient', function() {
       return {
         command: ['get',testKey],
         handler: function(reply, result) {
-          result.deepSet('testDeep.a.b', reply);
+          result.setKey('testDeep.a.b', reply);
         }
       };
     },
@@ -46,7 +47,7 @@ describe('#createClient', function() {
 
   describe('#client', function() {
     describe('#registerCommand', function() {
-      function testCommand(){};
+      function testCommand() {};
       var key = 'testCommand';
       it('Registered command gets appended to client', function() {
         myClient.registerCommand(key, testCommand);
@@ -82,6 +83,7 @@ describe('#createClient', function() {
           myClient.deepGetTest(function(err, result) {
             should.not.exist(err);
             result.testDeep.a.b.should.equal(randomValue);
+            expect(result.setKey).to.not.be.a('function');
             done();
           });
         });
@@ -129,6 +131,7 @@ describe('#createClient', function() {
           .exec(function(err, result) {
             should.not.exist(err);
             result.testDeep.a.b.should.equal(randomValue);
+            expect(result.setKey).to.not.be.a('function');
             done();
           });
       });
