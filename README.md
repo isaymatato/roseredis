@@ -187,8 +187,8 @@ roseClient.getFooBar(function(err, result) {
   // result.foo.bar will be set to the reply value
 });
 ```
-(See the deepref github page for full documentation of setKey)
-https://github.com/isaymatato/deepref
+(See the deepref github page for full documentation of setKey)  
+https://github.com/isaymatato/deepref  
 
 ## Tests
   ```
