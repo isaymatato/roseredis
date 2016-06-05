@@ -171,6 +171,25 @@ var commands = {
 roseClient.registerCommands(commands);
 ```
 
+Use result.setKey to set a deeply nested field in the result object.
+```javascript
+function getFooBar() {
+  return {
+    command: ['hget','foo', 'bar'],
+    handler: function(reply, result) {
+      result.setKey('foo.bar', reply);
+    }
+  };
+}
+
+roseClient.registerCommand('getFooBar', getFooBar);
+roseClient.getFooBar(function(err, result) {
+  // result.foo.bar will be set to the reply value
+});
+```
+(See the deepref github page for full documentation of setKey)
+https://github.com/isaymatato/deepref
+
 ## Tests
   ```
   npm test
