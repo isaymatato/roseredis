@@ -23,6 +23,15 @@ describe('#createClient', function() {
         }
       };
     },
+    deepGetTest:
+    function() {
+      return {
+        command: ['get',testKey],
+        handler: function(reply, result) {
+          result.deepSet('testDeep.a.b', reply);
+        }
+      };
+    },
     delTest:
     function() {
       return ['del',testKey];
@@ -66,6 +75,17 @@ describe('#createClient', function() {
           });
         });
       });
+
+      it('Result should be able to deepset using setKey', function(done) {
+        var randomValue = '' + Math.random();
+        myClient.setTest(randomValue, function() {
+          myClient.deepGetTest(function(err, result) {
+            should.not.exist(err);
+            result.testDeep.a.b.should.equal(randomValue);
+            done();
+          });
+        });
+      });
     });
 
     describe('#multi', function() {
@@ -95,6 +115,20 @@ describe('#createClient', function() {
           .exec(function(err, result) {
             should.not.exist(err);
             result.test.should.equal(randomValue);
+            done();
+          });
+      });
+
+      it('Multi result should be able to deepset using setKey', function(done) {
+        var randomValue = '' + Math.random();
+        multi
+          .delTest()
+          .setTest(randomValue)
+          .deepGetTest()
+          .delTest()
+          .exec(function(err, result) {
+            should.not.exist(err);
+            result.testDeep.a.b.should.equal(randomValue);
             done();
           });
       });
