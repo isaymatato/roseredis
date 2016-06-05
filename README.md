@@ -190,6 +190,34 @@ roseClient.getFooBar(function(err, result) {
 (See the deepref github page for full documentation of setKey)  
 https://github.com/isaymatato/deepref  
 
+## Executing commands
+Once registered, you may execute a single command by calling roseClient[commandName]  
+```javascript
+function setFoo(value) {
+  return ['set','foo',value];
+}
+
+roseClient.registerCommand('getFoo', getFoo);
+roseClient.setFoo(42, function() {
+  // redis key 'foo' will now be set to '42'
+});
+```
+  
+You may also execute multiple commands using roseClient.multi()  
+```javascript
+roseClient.multi()
+  .setFoo('Foo is set to this')
+  .setBar(123456)
+  .getFoo()
+  .getBar()
+  .exec(function(err, result) {
+    console.log(result.foo);
+    // Foo is set to this
+    console.log(result.bar, typeof result.bar);
+    // 123456 'number'
+  });
+  
+  ```
 ## Tests
   ```
   npm test
