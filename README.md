@@ -197,7 +197,7 @@ function setFoo(value) {
   return ['set','foo',value];
 }
 
-roseClient.registerCommand('getFoo', getFoo);
+roseClient.registerCommand('setFoo', setFoo);
 roseClient.setFoo(42, function() {
   // redis key 'foo' will now be set to '42'
 });
