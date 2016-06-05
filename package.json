@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/isaymatato/roseredis#readme",
   "dependencies": {
+    "deepref": "^1.2.0",
     "redis": "^2.6.0-2"
   },
   "devDependencies": {
