@@ -40,6 +40,7 @@ Rose.prototype._execRedis = function(callback) {
   if (!this._commands || this._commands.length < 1) {
     return callback(null);
   }
+  console.dir(this._commands);
   var multi = this.redisClient.multi(this._commands);
   multi.exec(callback);
 };
@@ -111,7 +112,7 @@ Client.prototype._registerCommandSingle = function(commandDef) {
     var callback = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0, -1);
     var rose = new Rose(redisClient,[commandDef]);
-    rose[label]
+    return rose[label]
       .apply(this, args)
       .exec(callback);
   };
