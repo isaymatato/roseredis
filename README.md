@@ -91,7 +91,8 @@ roseClient.redisClient.quit();
 ```
   
 You may create child clients that inherit the parent's scope at the time of creation.  
-Commands registered in the child client will not affect the scope of the parent client.
+Commands registered in the child client will not affect the scope of the parent client.  
+Commands registered to the parent after the child has been created will not affect the child's scope.
 ```javascript
 
 roseClient.registerCommand('commandA', function(){});
