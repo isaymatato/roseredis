@@ -90,6 +90,10 @@ roseClient.redisClient.quit();
 
 ```
   
+Full documentation of node_redis can be found here:  
+https://github.com/NodeRedis/node_redis#readme
+  
+  
 You may create child clients that inherit the parent's scope at the time of creation.  
 Commands registered in the child client will not affect the scope of the parent client.  
 Commands registered to the parent after the child has been created will not affect the child's scope.
@@ -112,9 +116,6 @@ console.log( typeof childClient.commandB ); // function
 console.log( typeof roseClient.commandC ); // undefined
 
 ```
-
-Full documentation of node_redis can be found here:  
-https://github.com/NodeRedis/node_redis#readme
 
 ## Creating commands
 
