@@ -111,6 +111,10 @@ Client.prototype._registerCommandSingle = function(commandDef) {
   this[label] = function() {
     var callback = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0, -1);
+    if (typeof callback !== 'function') {
+      args.push(callback);
+    }
+
     var rose = new Rose(redisClient,[commandDef]);
     return rose[label]
       .apply(this, args)
