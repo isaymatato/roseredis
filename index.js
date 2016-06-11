@@ -122,6 +122,14 @@ Client.prototype.registerCommands = function(data) {
   }
 };
 
+Client.prototype.createClient = function() {
+  var client = new Client(this.redisClient);
+  this.commandDefs.forEach(function(def) {
+    client._registerCommandSingle(def);
+  });
+  return client;
+};
+
 module.exports = {
   createClient: function(redisClient) {
     return new Client(redisClient);
