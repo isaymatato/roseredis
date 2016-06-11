@@ -62,7 +62,7 @@ Rose.prototype._processReplies = function(replies) {
 Rose.prototype.exec = function(callback) {
   var self = this;
   var promise = new Promise(function(resolve, reject) {
-    this._execRedis(function(err, replies) {
+    self._execRedis(function(err, replies) {
       if (err) {
         console.error(err);
         reject('Error executing redis command!');
