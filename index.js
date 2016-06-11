@@ -61,18 +61,32 @@ Rose.prototype._processReplies = function(replies) {
 
 Rose.prototype.exec = function(callback) {
   var self = this;
-  if (typeof callback !== 'function') {
-    callback = function() {};
-  }
-  this._execRedis(function(err, replies) {
-    if (err) {
-      console.error(err);
-      return callback('Something went wrong!');
-    }
-    var result = self._processReplies(replies);
-    callback(null, result);
+  var promise = new Promise(function(resolve, reject) {
+    self._execRedis(function(err, replies) {
+      if (err) {
+        console.error(err);
+        reject('Error executing redis command!');
+      }
+      var result = self._processReplies(replies);
+      resolve(result);
+    });
   });
+
+  if (typeof callback === 'function') {
+    unpromisify(promise, callback);
+  }
+
+  return promise;
 };
+
+function unpromisify(promise, callback) {
+  promise.then(function(result) {
+    callback(null, result);
+  })
+  .catch(function(error) {
+    callback(error);
+  });
+}
 
 function Client(redisClient) {
   this.redisClient = redisClient;
@@ -96,8 +110,12 @@ Client.prototype._registerCommandSingle = function(commandDef) {
   this[label] = function() {
     var callback = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0, -1);
-    var easyRedis = new Rose(redisClient,[commandDef]);
-    easyRedis[label]
+    if (typeof callback !== 'function') {
+      args.push(callback);
+    }
+
+    var rose = new Rose(redisClient,[commandDef]);
+    return rose[label]
       .apply(this, args)
       .exec(callback);
   };

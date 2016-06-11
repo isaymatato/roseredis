@@ -77,6 +77,22 @@ describe('#createClient', function() {
         });
       });
 
+      it('Command should return promise', function(done) {
+        var randomValue = '' + Math.random();
+
+        myClient.setTest(randomValue)
+        .then(function() {
+          return myClient.getTest();
+        })
+        .then(function(result) {
+          result.test.should.equal(randomValue);
+          done();
+        })
+        .catch(function(error) {
+          done(error);
+        });
+      });
+
       it('Result should be able to deepset using setKey', function(done) {
         var randomValue = '' + Math.random();
         myClient.setTest(randomValue, function() {
@@ -142,6 +158,23 @@ describe('#createClient', function() {
             should.not.exist(err);
             result.test.should.equal(randomValue);
             done();
+          });
+      });
+
+      it('Multi.exec should return a promise', function(done) {
+        var randomValue = '' + Math.random();
+        multi
+          .delTest()
+          .setTest(randomValue)
+          .getTest()
+          .delTest()
+          .exec()
+          .then(function(result) {
+            result.test.should.equal(randomValue);
+            done();
+          })
+          .catch(function(error) {
+            done(error);
           });
       });
 
