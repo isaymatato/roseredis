@@ -40,7 +40,6 @@ Rose.prototype._execRedis = function(callback) {
   if (!this._commands || this._commands.length < 1) {
     return callback(null);
   }
-  console.dir(this._commands);
   var multi = this.redisClient.multi(this._commands);
   multi.exec(callback);
 };
