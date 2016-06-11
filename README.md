@@ -55,13 +55,13 @@ Easy to use abstraction layer for node_redis
     .setBar(123456)
     .getFoo()
     .getBar()
-    .exec(function(err, result) {
+    .exec()
+    .then(function(result) {
       console.log(result.foo);
       // Foo is set to this
       console.log(result.bar, typeof result.bar);
       // 123456 'number'
     });
-
   ```
 ## Creating the client
 
@@ -92,18 +92,18 @@ roseClient.redisClient.quit();
   
 Full documentation of node_redis can be found here:  
 https://github.com/NodeRedis/node_redis#readme
-## Child clients
+## Client clones
   
-You may create child clients that inherit the parent's scope at the time of creation.  
-Commands registered in the child client will not affect the scope of the parent client.  
-Commands registered to the parent after the child has been created will not affect the child's scope.
+You may clone the client using client.createClient().  
+Commands registered in the clone will not affect the scope of the parent client.  
+Commands registered to the parent after the clone has been created will not affect the clone's scope.
 ```javascript
 
 roseClient.registerCommand('commandA', function(){});
 
-var childClient = roseClient.createClient();
+var cloneClient = roseClient.createClient();
 
-childClient.registerCommand('commandB', function(){});
+cloneClient.registerCommand('commandB', function(){});
 
 roseClient.registerCommand('commandC', function(){});
 
@@ -111,9 +111,9 @@ console.log( typeof roseClient.commandA ); // function
 console.log( typeof roseClient.commandB ); // undefined
 console.log( typeof roseClient.commandC ); // function
 
-console.log( typeof childClient.commandA ); // function
-console.log( typeof childClient.commandB ); // function
-console.log( typeof roseClient.commandC ); // undefined
+console.log( typeof cloneClient.commandA ); // function
+console.log( typeof cloneClient.commandB ); // function
+console.log( typeof cloneClient.commandC ); // undefined
 
 ```
 
@@ -161,7 +161,24 @@ handler: function(reply, result) {
   result.bar = parseInt(reply) || 0;
 }
 ```
+Use result.setKey to set a deeply nested field in the result object.
+```javascript
+function getFooBar() {
+  return {
+    command: ['hget','foo', 'bar'],
+    handler: function(reply, result) {
+      result.setKey('foo.bar', reply);
+    }
+  };
+}
 
+roseClient.registerCommand('getFooBar', getFooBar);
+roseClient.getFooBar(function(err, result) {
+  // result.foo.bar will be set to the reply value
+});
+```
+(See the deepref github page for full documentation of setKey)  
+https://github.com/isaymatato/deepref 
 
 ## Registering commands
 Once created, you'll need to register commands with the rose client.  
@@ -194,47 +211,30 @@ var commands = {
 };
 roseClient.registerCommands(commands);
 ```
-
-Use result.setKey to set a deeply nested field in the result object.
-```javascript
-function getFooBar() {
-  return {
-    command: ['hget','foo', 'bar'],
-    handler: function(reply, result) {
-      result.setKey('foo.bar', reply);
-    }
-  };
-}
-
-roseClient.registerCommand('getFooBar', getFooBar);
-roseClient.getFooBar(function(err, result) {
-  // result.foo.bar will be set to the reply value
-});
-```
-(See the deepref github page for full documentation of setKey)  
-https://github.com/isaymatato/deepref  
-
 ## Executing commands
 Once registered, you may execute a single command by calling roseClient[commandName]  
+The command will return a promise.
 ```javascript
 function setFoo(value) {
   return ['set','foo',value];
 }
 
 roseClient.registerCommand('setFoo', setFoo);
-roseClient.setFoo(42, function() {
+roseClient.setFoo(42)
+.then(function() {
   // redis key 'foo' will now be set to '42'
 });
 ```
   
-You may also execute multiple commands using roseClient.multi()  
+You may also execute multiple commands using roseClient.multi()
 ```javascript
 roseClient.multi()
   .setFoo('Foo is set to this')
   .setBar(123456)
   .getFoo()
   .getBar()
-  .exec(function(err, result) {
+  .exec()
+  .then(function(result) {
     console.log(result.foo);
     // Foo is set to this
     console.log(result.bar, typeof result.bar);
@@ -247,6 +247,15 @@ roseClient.multi()
   npm test
   ```
 
+## Release Notes
+As of version 1.4.0, all async methods return a promise.  Callbacks are still supported, though it's recommended you use promises instead.  The last argument passed in to any of the async methods will be treated as a callback if it is a function.
+```javascript
+roseClient.multi()
+  .exec(function(err, result) {
+    // This still works but please don't use it
+  });
+```
+  
 ## Contributing
 
 Please use the included style guide.  If you change anything, please test
