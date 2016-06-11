@@ -94,6 +94,24 @@ describe('#createClient', function() {
       it('should be a function', function() {
         expect(myClient.createClient).to.be.a('function');
       });
+      var childClient;
+      it('should create an object', function() {
+        childClient = myClient.createClient();
+        expect(childClient).to.be.a('object');
+      });
+
+      it('should register inherited parent commands', function() {
+        myClient.registerCommand('testParentCommand', function() {});
+
+        childClient = myClient.createClient();
+        childClient.registerCommand('testChildCommand', function() {});
+
+        expect(myClient.testParentCommand).to.be.a('function');
+        expect(myClient.testChildCommand).to.not.be.a('function');
+
+        expect(childClient.testParentCommand).to.be.a('function');
+        expect(childClient.testChildCommand).to.be.a('function');
+      });
     });
 
     describe('#multi', function() {
