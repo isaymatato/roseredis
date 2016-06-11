@@ -89,6 +89,28 @@ roseClient.redisClient.quit();
 // This will disconnect from the redis server
 
 ```
+  
+You may create child clients that inherit the parent's scope at the time of creation.  
+Commands registered in the child client will not affect the scope of the parent client.
+```javascript
+
+roseClient.registerCommand('commandA', function(){});
+
+var childClient = roseClient.createClient();
+
+childClient.registerCommand('commandB', function(){});
+
+roseClient.registerCommand('commandC', function(){});
+
+console.log( typeof roseClient.commandA ); // function
+console.log( typeof roseClient.commandB ); // undefined
+console.log( typeof roseClient.commandC ); // function
+
+console.log( typeof childClient.commandA ); // function
+console.log( typeof childClient.commandB ); // function
+console.log( typeof roseClient.commandC ); // undefined
+
+```
 
 Full documentation of node_redis can be found here:  
 https://github.com/NodeRedis/node_redis#readme
