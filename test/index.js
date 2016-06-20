@@ -66,6 +66,23 @@ describe('#createClient', function() {
         });
       });
 
+      it('Nested commands get appended to client and multi', function() {
+        myClient.registerCommands({
+          a: {
+            b: {
+              c: function() { return []; }
+            }
+          }
+        });
+        expect(myClient.a.b.c).to.be.a('function');
+
+        var multi = myClient.multi();
+        expect(multi.a.b.c).to.be.a('function');
+        var multi2 = multi.a.b.c();
+        expect(multi2.a.b.c).to.be.a('function');
+        expect(multi2.exec).to.be.a('function');
+      });
+
       it('Client should be able to set and retrieve value', function(done) {
         var randomValue = '' + Math.random();
         myClient.setTest(randomValue, function() {

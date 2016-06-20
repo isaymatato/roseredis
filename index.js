@@ -1,5 +1,6 @@
 var redis = require('redis');
 var deepRef = require('deepref');
+var flatten = require('flat');
 
 function Rose(redisClient, commandDefs) {
   this.redisClient = redisClient;
@@ -12,9 +13,11 @@ function Rose(redisClient, commandDefs) {
 Rose.prototype._registerCommand = function(self, commandDef) {
   var label = commandDef.label;
   var method = commandDef.method;
-  self[label] = function() {
+  var command = function() {
     return self.command(method.apply(self, arguments));
   };
+
+  deepRef.set(self, label, command);
 };
 
 Rose.prototype._registerCommands = function(commandDefs) {
@@ -106,19 +109,24 @@ Client.prototype._registerCommandSingle = function(commandDef) {
 
   var label = commandDef.label;
   var redisClient = this.redisClient;
-
-  this[label] = function() {
+  var def = {
+    label: 'single',
+    method: commandDef.method
+  };
+  var command = function() {
     var callback = arguments[arguments.length - 1];
     var args = Array.prototype.slice.call(arguments, 0, -1);
     if (typeof callback !== 'function') {
       args.push(callback);
     }
 
-    var rose = new Rose(redisClient,[commandDef]);
-    return rose[label]
+    var rose = new Rose(redisClient,[def]);
+    return rose[def.label]
       .apply(this, args)
       .exec(callback);
   };
+
+  deepRef.set(this, label, command);
 };
 
 Client.prototype.registerCommand = function(label, method) {
@@ -132,6 +140,7 @@ Client.prototype.registerCommand = function(label, method) {
 // Data should be a key:val object
 //   with key as the command label, and val as the method
 Client.prototype.registerCommands = function(data) {
+  data = flatten(data);
   for (var label in data) {
     this._registerCommandSingle({
       label: label,

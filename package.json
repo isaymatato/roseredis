@@ -1,6 +1,6 @@
 {
   "name": "roseredis",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Easy to use abstraction layer for node_redis",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
   "homepage": "https://github.com/isaymatato/roseredis#readme",
   "dependencies": {
     "deepref": "^1.2.0",
+    "flat": "2.0.x",
     "redis": "^2.6.0-2"
   },
   "devDependencies": {
