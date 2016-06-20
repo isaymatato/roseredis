@@ -67,14 +67,13 @@ describe('#createClient', function() {
       });
 
       it('Nested commands get appended to client and multi', function() {
-        // myClient.registerCommands({
-        //   a: {
-        //     b: {
-        //       c: function() { return []; }
-        //     }
-        //   }
-        // });
-        myClient.registerCommand('a.b.c', function(){return []});
+        myClient.registerCommands({
+          a: {
+            b: {
+              c: function() { return []; }
+            }
+          }
+        });
         expect(myClient.a.b.c).to.be.a('function');
 
         var multi = myClient.multi();

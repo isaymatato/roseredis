@@ -1,5 +1,6 @@
 var redis = require('redis');
 var deepRef = require('deepref');
+var flatten = require('flat');
 
 function Rose(redisClient, commandDefs) {
   this.redisClient = redisClient;
@@ -139,6 +140,7 @@ Client.prototype.registerCommand = function(label, method) {
 // Data should be a key:val object
 //   with key as the command label, and val as the method
 Client.prototype.registerCommands = function(data) {
+  data = flatten(data);
   for (var label in data) {
     this._registerCommandSingle({
       label: label,
